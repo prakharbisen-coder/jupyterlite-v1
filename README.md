@@ -133,3 +133,10 @@ See also:
   </a>
   <p>Join our community and become a contributor today! 🚀 </p>
 </div>
+
+# Run Dev
+jlpm install
+jlpm install:py
+NO_WEBPACK_LICENSES=1 jlpm build
+jlpm dev:build
+jlpm dev:serve
