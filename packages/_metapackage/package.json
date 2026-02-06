@@ -1,0 +1,43 @@
+{
+  "name": "@jupyterlite/metapackage",
+  "version": "0.8.0-alpha.1",
+  "private": true,
+  "description": "JupyterLite - Metapackage",
+  "homepage": "https://github.com/jupyterlite/jupyterlite",
+  "bugs": {
+    "url": "https://github.com/jupyterlite/jupyterlite/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupyterlite/jupyterlite.git"
+  },
+  "license": "BSD-3-Clause",
+  "author": "JupyterLite Contributor",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "watch": "tsc -b -w --preserveWatchOutput"
+  },
+  "dependencies": {
+    "@jupyterlite/application": "^0.8.0-alpha.1",
+    "@jupyterlite/application-extension": "^0.8.0-alpha.1",
+    "@jupyterlite/apputils": "^0.8.0-alpha.1",
+    "@jupyterlite/apputils-extension": "^0.8.0-alpha.1",
+    "@jupyterlite/contents": "^0.8.0-alpha.1",
+    "@jupyterlite/iframe-extension": "^0.8.0-alpha.1",
+    "@jupyterlite/kernel": "^0.8.0-alpha.1",
+    "@jupyterlite/localforage": "^0.8.0-alpha.1",
+    "@jupyterlite/notebook-application-extension": "^0.8.0-alpha.1",
+    "@jupyterlite/repl-extension": "^0.8.0-alpha.1",
+    "@jupyterlite/server": "^0.8.0-alpha.1",
+    "@jupyterlite/services": "^0.8.0-alpha.1",
+    "@jupyterlite/services-extension": "^0.8.0-alpha.1",
+    "@jupyterlite/session": "^0.8.0-alpha.1",
+    "@jupyterlite/settings": "^0.8.0-alpha.1",
+    "@jupyterlite/ui-components": "^0.8.0-alpha.1"
+  },
+  "devDependencies": {
+    "typescript": "~5.5.4"
+  }
+}
