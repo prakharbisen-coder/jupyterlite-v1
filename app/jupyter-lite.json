@@ -10,6 +10,10 @@
     "federated_extensions": [],
     "fullLabextensionsUrl": "./extensions",
     "fullStaticUrl": "./build",
-    "licensesUrl": "./lab/api/licenses"
+    "licensesUrl": "./lab/api/licenses",
+    "disabledExtensions": [
+      "@jupyterlite/application-extension:about",
+      "@jupyterlab/apputils-extension:licenses-plugin"
+    ]
   }
 }
