@@ -2,7 +2,7 @@
 lib/
 node_modules/
 .yarn-packages/
-.yarn/
+.yarn/*
 .pnp*
 *.egg-info/
 .ipynb_checkpoints

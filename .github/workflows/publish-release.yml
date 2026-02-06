@@ -19,9 +19,25 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          node_version: '24'
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Enable Corepack safely
+        run: |
+          corepack enable
+          corepack prepare yarn@3.5.0 --activate
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
 
       - uses: actions/create-github-app-token@v2
         id: app-token
