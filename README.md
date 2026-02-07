@@ -140,3 +140,6 @@ jlpm install:py
 NO_WEBPACK_LICENSES=1 jlpm build
 jlpm dev:build
 jlpm dev:serve
+
+# S3 Deploy
+scripts/prepare-s3.sh 
