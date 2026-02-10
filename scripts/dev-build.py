@@ -2,6 +2,8 @@
 """Build JupyterLite site, optionally watching for content changes."""
 
 import argparse
+import json
+import os
 import shutil
 import subprocess
 import sys
@@ -26,8 +28,8 @@ def setup_site():
     """
     build_link = SITE_DIR / "build"
 
-    # If symlink already exists, site is already set up
-    if build_link.is_symlink():
+    # If symlink/junction already exists, site is already set up
+    if build_link.is_symlink() or (sys.platform == "win32" and build_link.is_dir() and build_link.exists()):
         print("[setup] _site already configured")
         return False
 
@@ -45,15 +47,28 @@ def setup_site():
     shutil.copytree(APP_DIR, SITE_DIR, ignore=ignore_patterns)
 
     # Create symlink: _site/build -> ../app/build
-    build_link.symlink_to(Path("..") / "app" / "build")
-    print("[setup] Created symlink: _site/build -> ../app/build")
+    # On Windows, use directory junction (no admin required) for directories
+    # and hard-copy fallback for files if symlinks fail
+    target_build = (ROOT / "app" / "build").resolve()
+    if sys.platform == "win32":
+        # Use directory junction on Windows (no elevation needed)
+        os.system(f'mklink /J "{build_link}" "{target_build}"')
+        print(f"[setup] Created junction: _site/build -> {target_build}")
+    else:
+        build_link.symlink_to(Path("..") / "app" / "build")
+        print("[setup] Created symlink: _site/build -> ../app/build")
 
     # Symlink JS files that may be edited during development
     for js_file in ["config-utils.js", "service-worker.js"]:
         site_file = SITE_DIR / js_file
         site_file.unlink()
-        site_file.symlink_to(Path("..") / "app" / js_file)
-        print(f"[setup] Created symlink: _site/{js_file} -> ../app/{js_file}")
+        if sys.platform == "win32":
+            # Copy on Windows as file symlinks need elevation
+            shutil.copy2(APP_DIR / js_file, site_file)
+            print(f"[setup] Copied: _site/{js_file} from app/{js_file}")
+        else:
+            site_file.symlink_to(Path("..") / "app" / js_file)
+            print(f"[setup] Created symlink: _site/{js_file} -> ../app/{js_file}")
 
     return True
 
@@ -79,9 +94,24 @@ def build():
         "_site",
     ]
 
+    # Load piplite_urls from examples/jupyter_lite_config.json and pass via CLI
+    # We don't use --config because it would also load LiteBuildConfig.output_dir
+    # and LiteBuildConfig.contents which conflict with the dev build settings.
+    config_path = EXAMPLES_DIR / "jupyter_lite_config.json"
+    if config_path.exists():
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+        piplite_urls = config.get("PipliteAddon", {}).get("piplite_urls", [])
+        for url in piplite_urls:
+            cmd.extend(["--piplite-wheels", url])
+
     try:
         subprocess.run(cmd, cwd=ROOT, check=True)
         print("[ok] Build complete")
+
+        # Auto-patch kernel to pre-install piplite packages on startup
+        from patch_kernel import patch as patch_kernel
+        patch_kernel()
+
         return True
     except subprocess.CalledProcessError as e:
         print(f"[error] Build failed: {e}")
