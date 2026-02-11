@@ -4,6 +4,7 @@
 #
 # Note: some dependencies are already in Pyodide 0.29 and don't need to be included here
 
+altair
 bqplot
 folium
 ipycanvas
@@ -14,5 +15,10 @@ ipyvue
 ipyvuetify
 ipywidgets
 nbformat
+openpyxl
 plotly
+scikit-learn
 seaborn
+vega-datasets
+xlrd
+xlsxwriter
